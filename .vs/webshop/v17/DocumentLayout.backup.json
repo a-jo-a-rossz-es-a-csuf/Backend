@@ -1,0 +1,245 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\webshop.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\webshop.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\webshop.csproj.user||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:webshop\\webshop.csproj.user||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\dbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\dbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\productscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\babinszki botond\\downloads\\webshop\\webshop\\webshop\\controllers\\olajokcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\olajokcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Program.cs",
+              "RelativeDocumentMoniker": "webshop\\Program.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Program.cs",
+              "RelativeToolTip": "webshop\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T06:53:42.299Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "webshop\\appsettings.Development.json",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\appsettings.Development.json",
+              "RelativeToolTip": "webshop\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-23T06:53:40.922Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "webshop.http",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\webshop.http",
+              "RelativeDocumentMoniker": "webshop\\webshop.http",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\webshop.http",
+              "RelativeToolTip": "webshop\\webshop.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-02-23T06:47:57.77Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "webshop.csproj.user",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\webshop.csproj.user",
+              "RelativeDocumentMoniker": "webshop\\webshop.csproj.user",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\webshop.csproj.user",
+              "RelativeToolTip": "webshop\\webshop.csproj.user",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003464|",
+              "WhenOpened": "2026-02-23T06:47:57.256Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ProductsController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\ProductsController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\ProductsController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\ProductsController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\ProductsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T06:47:32.531Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "OlajokController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\OlajokController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\OlajokController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\OlajokController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\OlajokController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T06:47:32.243Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ChatController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\ChatController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\ChatController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\ChatController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\ChatController.cs",
+              "ViewState": "AgIAAIEAAAAAAAAAAAAYwJQAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T06:47:32.005Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\appsettings.json",
+              "RelativeDocumentMoniker": "webshop\\appsettings.json",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\appsettings.json",
+              "RelativeToolTip": "webshop\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-18T08:56:32.349Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "OrdersController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\OrdersController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\OrdersController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\OrdersController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\OrdersController.cs",
+              "ViewState": "AgIAALoAAAAAAAAAAAAIwNQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:52:32.582Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CartController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\CartController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\CartController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\CartController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\CartController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALoAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:52:20.965Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CarsController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\CarsController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\CarsController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\CarsController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\CarsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJYAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:52:09.369Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:51:55.561Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAUwA0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:51:37.773Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DbService.cs",
+              "DocumentMoniker": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\DbService.cs",
+              "RelativeDocumentMoniker": "webshop\\DbService.cs",
+              "ToolTip": "C:\\Users\\Babinszki Botond\\Downloads\\webshop\\webshop\\webshop\\DbService.cs",
+              "RelativeToolTip": "webshop\\DbService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:39:11.474Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
