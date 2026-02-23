@@ -1,0 +1,133 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\turcs\u00E1nyi m\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\carscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\turcs\u00E1nyi m\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\turcs\u00E1nyi m\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\turcs\u00E1nyi m\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\cartcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\turcs\u00E1nyi m\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\turcs\u00E1nyi m\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|c:\\users\\turcs\u00E1nyi m\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\dbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{764860AB-8D8B-4A56-BCA2-B0C6543CE2BE}|webshop\\webshop.csproj|solutionrelative:webshop\\dbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\appsettings.json",
+              "RelativeDocumentMoniker": "webshop\\appsettings.json",
+              "ToolTip": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\appsettings.json",
+              "RelativeToolTip": "webshop\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-18T08:56:32.349Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "OrdersController.cs",
+              "DocumentMoniker": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\OrdersController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\OrdersController.cs",
+              "ToolTip": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\OrdersController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\OrdersController.cs",
+              "ViewState": "AgIAALoAAAAAAAAAAAAIwNQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:52:32.582Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CartController.cs",
+              "DocumentMoniker": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\CartController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\CartController.cs",
+              "ToolTip": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\CartController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\CartController.cs",
+              "ViewState": "AgIAAKoAAAAAAAAAAAAIwLoAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:52:20.965Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CarsController.cs",
+              "DocumentMoniker": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\CarsController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\CarsController.cs",
+              "ToolTip": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\CarsController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\CarsController.cs",
+              "ViewState": "AgIAAJYAAAAAAAAAAAAIwKoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:52:09.369Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAIwIIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:51:55.561Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "webshop\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "webshop\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAAPMAAAAAAAAAAAAIwA0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:51:37.773Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DbService.cs",
+              "DocumentMoniker": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\DbService.cs",
+              "RelativeDocumentMoniker": "webshop\\DbService.cs",
+              "ToolTip": "C:\\Users\\Turcs\u00E1nyi M\u00E1t\u00E9\\source\\repos\\webshop\\webshop\\DbService.cs",
+              "RelativeToolTip": "webshop\\DbService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-18T08:39:11.474Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
