@@ -14,7 +14,7 @@
       },
       {
         "Name": "id",
-        "Type": "System.Int32",
+        "Type": "System.String",
         "IsRequired": false
       }
     ],
@@ -35,7 +35,7 @@
       },
       {
         "Name": "id",
-        "Type": "System.Int32",
+        "Type": "System.String",
         "IsRequired": false
       }
     ],
@@ -56,7 +56,7 @@
       },
       {
         "Name": "id",
-        "Type": "System.Int32",
+        "Type": "System.String",
         "IsRequired": false
       }
     ],
@@ -77,22 +77,6 @@
       },
       {
         "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "AutoPartsApi.Controllers.AuthController",
-    "Method": "HandleAction",
-    "RelativePath": "api/auth",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "action",
         "Type": "System.String",
         "IsRequired": false
       }
@@ -101,18 +85,22 @@
   },
   {
     "ContainingType": "AutoPartsApi.Controllers.AuthController",
-    "Method": "HandleAction",
-    "RelativePath": "api/auth",
+    "Method": "Logout",
+    "RelativePath": "api/auth/logout",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "action",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AutoPartsApi.Controllers.AuthController",
+    "Method": "Verify",
+    "RelativePath": "api/auth/verify",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -309,6 +297,22 @@
         "Name": "statusz",
         "Type": "System.String",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AutoPartsApi.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "AutoPartsApi.Controllers.LoginDto",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -520,6 +524,22 @@
         "Name": "limit",
         "Type": "System.Int32",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AutoPartsApi.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "AutoPartsApi.Controllers.RegisterDto",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

@@ -46,51 +46,95 @@ public class CartController : ControllerBase
 
     private async Task<IActionResult> GetCart(System.Data.IDbConnection conn, int userId)
     {
-        if (userId == 0)
+        try
         {
-            var data = await ReadBody();
-            userId = GetInt(data, "user_id");
-        }
-
-        if (userId == 0)
-            return Ok(new { success = true, items = Array.Empty<object>(), total = 0, logged_in = false });
-
-        var items = (await conn.QueryAsync(@"
-            SELECT k.id, k.mennyiseg, k.alkatresz_id, k.olaj_id,
-                   COALESCE(a.nev, o.nev) as nev,
-                   COALESCE(a.cikkszam, o.cikkszam) as cikkszam,
-                   COALESCE(COALESCE(a.akcios_ar, a.ar), COALESCE(o.akcios_ar, o.ar)) as ar,
-                   COALESCE(a.gyarto, o.gyarto) as gyarto
-            FROM kosar k
-            LEFT JOIN alkatreszek a ON k.alkatresz_id = a.id
-            LEFT JOIN olajok o ON k.olaj_id = o.id
-            WHERE k.user_id = @UserId", new { UserId = userId })).ToList();
-
-        decimal total = 0;
-        var result = new List<Dictionary<string, object?>>();
-        foreach (var rawItem in items)
-        {
-            var r = (IDictionary<string, object>)rawItem;
-            decimal ar = r["ar"] != null ? Convert.ToDecimal(r["ar"]) : 0;
-            int menny = Convert.ToInt32(r["mennyiseg"]);
-            decimal osszeg = ar * menny;
-            total += osszeg;
-
-            result.Add(new Dictionary<string, object?>
+            if (userId == 0)
             {
-                ["id"] = Convert.ToInt32(r["id"]),
-                ["mennyiseg"] = menny,
-                ["alkatresz_id"] = r["alkatresz_id"] is DBNull ? null : r["alkatresz_id"],
-                ["olaj_id"] = r["olaj_id"] is DBNull ? null : r["olaj_id"],
-                ["nev"] = r["nev"]?.ToString(),
-                ["cikkszam"] = r["cikkszam"]?.ToString(),
-                ["ar"] = ar,
-                ["gyarto"] = r["gyarto"]?.ToString(),
-                ["osszeg"] = osszeg
+                var data = await ReadBody();
+                userId = GetInt(data, "user_id");
+            }
+
+            if (userId == 0)
+                return Ok(new { success = true, items = Array.Empty<object>(), total = 0, logged_in = false });
+
+            var items = (await conn.QueryAsync(@"
+                SELECT k.id, k.mennyiseg, k.alkatresz_id, k.olaj_id,
+                       COALESCE(a.nev, o.nev) as nev,
+                       COALESCE(a.cikkszam, o.cikkszam) as cikkszam,
+                       COALESCE(COALESCE(a.akcios_ar, a.ar), COALESCE(o.akcios_ar, o.ar)) as ar,
+                       COALESCE(a.gyarto, o.gyarto) as gyarto
+                FROM kosar k
+                LEFT JOIN alkatreszek a ON k.alkatresz_id = a.id
+                LEFT JOIN olajok o ON k.olaj_id = o.id
+                WHERE k.user_id = @UserId", new { UserId = userId })).ToList();
+
+            decimal eredetiOsszeg = 0;
+            var result = new List<Dictionary<string, object?>>();
+
+            foreach (var rawItem in items)
+            {
+                var r = (IDictionary<string, object>)rawItem;
+
+                decimal ar = 0;
+                if (r.ContainsKey("ar") && !(r["ar"] is DBNull) && r["ar"] != null)
+                {
+                    ar = Convert.ToDecimal(r["ar"]);
+                }
+
+                int menny = 0;
+                if (r.ContainsKey("mennyiseg") && !(r["mennyiseg"] is DBNull) && r["mennyiseg"] != null)
+                {
+                    menny = Convert.ToInt32(r["mennyiseg"]);
+                }
+
+                decimal tetelOsszeg = ar * menny;
+                eredetiOsszeg += tetelOsszeg;
+
+                result.Add(new Dictionary<string, object?>
+                {
+                    ["id"] = r.ContainsKey("id") && !(r["id"] is DBNull) ? Convert.ToInt32(r["id"]) : 0,
+                    ["mennyiseg"] = menny,
+                    ["alkatresz_id"] = r.ContainsKey("alkatresz_id") && !(r["alkatresz_id"] is DBNull) ? r["alkatresz_id"] : null,
+                    ["olaj_id"] = r.ContainsKey("olaj_id") && !(r["olaj_id"] is DBNull) ? r["olaj_id"] : null,
+                    ["nev"] = r.ContainsKey("nev") && !(r["nev"] is DBNull) ? r["nev"]?.ToString() : "Ismeretlen termék",
+                    ["cikkszam"] = r.ContainsKey("cikkszam") && !(r["cikkszam"] is DBNull) ? r["cikkszam"]?.ToString() : "",
+                    ["ar"] = ar,
+                    ["gyarto"] = r.ContainsKey("gyarto") && !(r["gyarto"] is DBNull) ? r["gyarto"]?.ToString() : "",
+                    ["osszeg"] = tetelOsszeg
+                });
+            }
+
+            // --- KEDVEZMÉNY LOGIKA KEZDETE ---
+            // 1. Megnézzük, van-e korábbi rendelése a felhasználónak (írd át a 'rendelesek' táblanevet, ha nálad máshogy van!)
+            int korabbiRendelesekSzama = await conn.ExecuteScalarAsync<int>(
+                "SELECT COUNT(id) FROM rendelesek WHERE user_id = @UserId",
+                new { UserId = userId });
+
+            bool isElsoVasarlas = korabbiRendelesekSzama == 0;
+            decimal vegosszeg = eredetiOsszeg;
+
+            // 2. Ha ez az elsõ, levonjuk a 15%-ot
+            if (isElsoVasarlas && eredetiOsszeg > 0)
+            {
+                vegosszeg = eredetiOsszeg * 0.85m;
+            }
+            // --- KEDVEZMÉNY LOGIKA VÉGE ---
+
+            return Ok(new
+            {
+                success = true,
+                items = result,
+                total = vegosszeg,                 // A fizetendõ, esetlegesen kedvezményes ár
+                eredeti_total = eredetiOsszeg,     // Ezt küldjük a frontendnek, ha át akarja húzni a régi árat
+                elso_vasarlo_kedvezmeny = isElsoVasarlas, // Flag a frontendnek
+                logged_in = true
             });
         }
-
-        return Ok(new { success = true, items = result, total, logged_in = true });
+        catch (Exception ex)
+        {
+            Console.WriteLine($"\n=== KOSÁR LEKÉRDEZÉSI HIBA ===\n{ex.Message}\n==============================\n");
+            return Ok(new { success = true, items = Array.Empty<object>(), total = 0, logged_in = true });
+        }
     }
 
     private async Task<IActionResult> AddToCart(System.Data.IDbConnection conn)

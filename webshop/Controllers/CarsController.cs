@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AutoPartsApi.Services;
 using Dapper;
+using System.Data;
 
 namespace AutoPartsApi.Controllers;
 
@@ -26,7 +27,7 @@ public class CarsController : ControllerBase
         try
         {
             using var conn = _db.CreateConnection();
-            conn.Open();
+            if (conn.State != ConnectionState.Open) conn.Open();
 
             switch (action)
             {
@@ -65,7 +66,7 @@ public class CarsController : ControllerBase
 
                         var data = (await conn.QueryAsync<dynamic>(
                             @"SELECT id, motor_kod, hengerurtartalom, teljesitmeny_le, teljesitmeny_kw, 
-                                 uzemanyag, nyomatek, hengerszam 
+                                  uzemanyag, nyomatek, hengerszam 
                           FROM motorok WHERE modell_id = @Id 
                           ORDER BY hengerurtartalom, teljesitmeny_le",
                             new { Id = modell_id })).ToList();
@@ -101,16 +102,13 @@ public class CarsController : ControllerBase
                         if (string.IsNullOrEmpty(vin) || vin.Length != 17)
                             return BadRequest(new { success = false, error = "Ervenyes 17 karakteres alvazszam szukseges" });
 
-                        // Jarmu keresese VIN alapjan
                         var jarmu = (await conn.QueryAsync(
-                            @"SELECT j.*, m.nev as marka_nev, m.tipus as marka_tipus,
-                                 am.modell_nev, am.generacio, am.evjarat_tol, am.evjarat_ig, am.karosszeria,
-                                 mo.motor_kod, mo.hengerurtartalom, mo.teljesitmeny_le, mo.uzemanyag
-                          FROM jarmuvek j
-                          INNER JOIN automodellek am ON j.modell_id = am.id
-                          INNER JOIN markak m ON am.marka_id = m.id
-                          LEFT JOIN motorok mo ON j.motor_id = mo.id
-                          WHERE j.alvazszam = @Vin",
+                            @"SELECT j.*, m.nev as marka_nev, am.modell_nev, mo.motor_kod, mo.teljesitmeny_le
+                              FROM jarmuvek j
+                              INNER JOIN automodellek am ON j.modell_id = am.id
+                              INNER JOIN markak m ON am.marka_id = m.id
+                              LEFT JOIN motorok mo ON j.motor_id = mo.id
+                              WHERE j.alvazszam = @Vin",
                             new { Vin = vin.ToUpper() })).FirstOrDefault();
 
                         if (jarmu == null)
@@ -120,12 +118,10 @@ public class CarsController : ControllerBase
                         int modId = Convert.ToInt32(jr["modell_id"]);
                         int? motId = jr["motor_id"] != null && jr["motor_id"] is not DBNull ? Convert.ToInt32(jr["motor_id"]) : null;
 
-                        // Alkatreszek keresese a jarmuhoz
-                        var sql = @"SELECT DISTINCT a.*, k.nev as kategoria_nev
-                                FROM alkatreszek a
-                                LEFT JOIN kategoriak k ON a.kategoria_id = k.id
-                                INNER JOIN alkatresz_auto aa ON a.id = aa.alkatresz_id
-                                WHERE aa.modell_id = @ModellId AND a.aktiv = 1";
+                        var sql = @"SELECT DISTINCT a.* FROM alkatreszek a
+                                    INNER JOIN alkatresz_auto aa ON a.id = aa.alkatresz_id
+                                    WHERE aa.modell_id = @ModellId AND a.aktiv = 1";
+
                         var parameters = new DynamicParameters();
                         parameters.Add("ModellId", modId);
 
@@ -134,28 +130,45 @@ public class CarsController : ControllerBase
                             sql += " AND (aa.motor_id = @MotorId OR aa.motor_id IS NULL)";
                             parameters.Add("MotorId", motId.Value);
                         }
-                        sql += " ORDER BY a.nev";
 
                         var parts = await conn.QueryAsync<dynamic>(sql, parameters);
 
-                        // Jarmu info osszeallitasa
-                        var vehicleInfo = new Dictionary<string, object?>
+                        return Ok(new
                         {
-                            ["alvazszam"] = jr["alvazszam"]?.ToString(),
-                            ["marka"] = jr["marka_nev"]?.ToString(),
-                            ["tipus"] = jr["marka_tipus"]?.ToString(),
-                            ["modell"] = jr["modell_nev"]?.ToString(),
-                            ["generacio"] = jr["generacio"]?.ToString(),
-                            ["evjarat"] = jr["evjarat"] is not DBNull && jr["evjarat"] != null ? Convert.ToInt32(jr["evjarat"]) : null,
-                            ["karosszeria"] = jr["karosszeria"]?.ToString(),
-                            ["szin"] = jr["szin"]?.ToString(),
-                            ["motor_kod"] = jr["motor_kod"]?.ToString(),
-                            ["hengerurtartalom"] = jr["hengerurtartalom"] is not DBNull && jr["hengerurtartalom"] != null ? Convert.ToInt32(jr["hengerurtartalom"]) : null,
-                            ["teljesitmeny_le"] = jr["teljesitmeny_le"] is not DBNull && jr["teljesitmeny_le"] != null ? Convert.ToInt32(jr["teljesitmeny_le"]) : null,
-                            ["uzemanyag"] = jr["uzemanyag"]?.ToString()
-                        };
+                            success = true,
+                            data = new
+                            {
+                                markaNev = jr["marka_nev"]?.ToString(),
+                                modellNev = jr["modell_nev"]?.ToString(),
+                                evjarat = jr["evjarat"] != null ? Convert.ToInt32(jr["evjarat"]) : 0,
+                                motorKod = jr["motor_kod"]?.ToString(),
+                                teljesitmenyLe = jr["teljesitmeny_le"] != null ? Convert.ToInt32(jr["teljesitmeny_le"]) : 0,
+                                alkatreszek = parts
+                            }
+                        });
+                    }
 
-                        return Ok(new { success = true, vehicle = vehicleInfo, products = parts });
+                // --- ÚJ CIKKSZÁM ALAPÚ KERESÉS ---
+                case "search_by_sku":
+                    {
+                        // A 'vin' query paraméterben kapjuk meg a cikkszámot a frontendtõl
+                        if (string.IsNullOrEmpty(vin))
+                            return BadRequest(new { success = false, error = "Cikkszám megadása kötelezõ!" });
+
+                        var sql = @"SELECT a.*, k.nev as kategoria_nev 
+                                    FROM alkatreszek a 
+                                    LEFT JOIN kategoriak k ON a.kategoria_id = k.id 
+                                    WHERE a.cikkszam = @Sku AND a.aktiv = 1";
+
+                        var parts = await conn.QueryAsync<dynamic>(sql, new { Sku = vin.Trim() });
+                        var list = parts.ToList();
+
+                        return Ok(new
+                        {
+                            success = true,
+                            data = list,
+                            count = list.Count
+                        });
                     }
 
                 default:

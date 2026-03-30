@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<DbService>();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
@@ -16,7 +17,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors();
 app.MapControllers();
 

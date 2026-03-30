@@ -20,8 +20,16 @@ public class AdminController : ControllerBase
     [HttpPost]
     [HttpPut]
     [HttpDelete]
-    public async Task<IActionResult> HandleAction([FromQuery] string action = "", [FromQuery] int id = 0)
+    public async Task<IActionResult> HandleAction([FromQuery] string action = "", [FromQuery] string? id = null)
     {
+        // JAVÍTÁS: Biztonságos ID konvertálás. Ha "undefined", "null" vagy üres jön a Reactbõl, 
+        // simán 0 lesz, és a keretrendszer nem vágja el a kérést egy 400 Bad Request hibával.
+        int numericId = 0;
+        if (!string.IsNullOrEmpty(id))
+        {
+            int.TryParse(id, out numericId);
+        }
+
         try
         {
             using var conn = _db.CreateConnection();
@@ -124,15 +132,16 @@ public class AdminController : ControllerBase
                 case "order_details":
                     {
                         var order = await conn.QueryFirstOrDefaultAsync<dynamic>(
-                            "SELECT * FROM rendelesek WHERE id = @Id", new { Id = id });
+                            "SELECT * FROM rendelesek WHERE id = @Id", new { Id = numericId });
 
                         if (order != null)
                         {
                             var tetelek = await conn.QueryAsync<dynamic>(
-                                "SELECT * FROM rendeles_tetelek WHERE rendeles_id = @Id", new { Id = id });
+                                "SELECT * FROM rendeles_tetelek WHERE rendeles_id = @Id", new { Id = numericId });
 
                             var orderDict = ((IDictionary<string, object>)order).ToDictionary(k => k.Key, k => k.Value);
-                            orderDict["tetelek"] = tetelek.ToList();
+
+                            orderDict["items"] = tetelek.ToList();
 
                             return Ok(new { success = true, order = orderDict });
                         }
@@ -200,37 +209,40 @@ public class AdminController : ControllerBase
                         var data = await ReadBody();
                         if (data == null) return Ok(new { success = false, error = "Hibas JSON" });
 
+                        int updId = numericId > 0 ? numericId : GetInt(data, "id");
+                        if (updId == 0) return Ok(new { success = false, error = "Hianyzo azonosito" });
+
                         await conn.ExecuteAsync(@"
-                        UPDATE alkatreszek SET cikkszam=@cikkszam, gyarto=@gyarto, nev=@nev, leiras=@leiras,
-                            kategoria_id=@kategoria_id, oe_szam=@oe_szam, ar=@ar, akcios_ar=@akcios_ar, keszlet=@keszlet, kep_url=@kep_url
-                        WHERE id=@id",
+                        UPDATE alkatreszek 
+                        SET cikkszam = @cikkszam, nev = @nev, ar = @ar, keszlet = @keszlet 
+                        WHERE id = @id",
                             new
                             {
-                                id = id > 0 ? id : GetInt(data, "id"),
+                                id = updId,
                                 cikkszam = GetStr(data, "cikkszam"),
-                                gyarto = GetStr(data, "gyarto"),
                                 nev = GetStr(data, "nev"),
-                                leiras = GetStr(data, "leiras"),
-                                kategoria_id = GetIntNull(data, "kategoria_id"),
-                                oe_szam = GetStr(data, "oe_szam"),
                                 ar = GetDecimal(data, "ar"),
-                                akcios_ar = GetDecimalNull(data, "akcios_ar"),
-                                keszlet = GetInt(data, "keszlet"),
-                                kep_url = GetStr(data, "kep_url")
+                                keszlet = GetInt(data, "keszlet")
                             });
-                        return Ok(new { success = (object)true });
+                        return Ok(new { success = true });
                     }
 
                 case "delete_product":
                     {
-                        await conn.ExecuteAsync("UPDATE alkatreszek SET aktiv = 0 WHERE id = @Id", new { Id = id });
-                        return Ok(new { success = (object)true });
+                        var data = await ReadBody();
+                        int delId = numericId > 0 ? numericId : GetInt(data, "id");
+
+                        if (delId == 0) return Ok(new { success = false, error = "Hianyzo termek azonosito" });
+
+                        await conn.ExecuteAsync("DELETE FROM alkatreszek WHERE id = @Id", new { Id = delId });
+
+                        return Ok(new { success = true });
                     }
 
                 case "get_product":
                     {
                         var product = await conn.QueryFirstOrDefaultAsync<dynamic>(
-                            "SELECT * FROM alkatreszek WHERE id = @Id", new { Id = id });
+                            "SELECT * FROM alkatreszek WHERE id = @Id", new { Id = numericId });
                         return Ok(new { success = true, product });
                     }
 
