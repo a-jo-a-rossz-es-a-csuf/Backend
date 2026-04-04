@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using AutoPartsApi.Services;
 using Dapper;
 using System.Data;
+using webshop.Models;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace AutoPartsApi.Controllers;
 
@@ -17,77 +19,94 @@ public class OlajokController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> HandleAction(
-        [FromQuery] string action = "list",
-        [FromQuery] string? kategoria = null, // A frontend kategoria néven küldi, de mi a 'tipus' oszlopban keressük
-        [FromQuery] string? viszkozitas = null,
-        [FromQuery] string? gyarto = null)
+
+    public IActionResult GetAllOlaj()
     {
         try
         {
-            using var conn = _db.CreateConnection();
-            if (conn.State != ConnectionState.Open) conn.Open();
-
-            string act = (action ?? "list").ToLower();
-
-            switch (act)
-            {
-                case "list":
-                    {
-                        // A képed alapján: tipus, viszkozitas, gyarto, aktiv oszlopok vannak
-                        var sql = "SELECT * FROM olajok WHERE aktiv = 1";
-                        var parameters = new DynamicParameters();
-
-                        if (!string.IsNullOrEmpty(kategoria))
-                        {
-                            sql += " AND tipus = @Kat";
-                            parameters.Add("Kat", kategoria);
-                        }
-                        if (!string.IsNullOrEmpty(viszkozitas))
-                        {
-                            sql += " AND viszkozitas = @Vis";
-                            parameters.Add("Vis", viszkozitas);
-                        }
-                        if (!string.IsNullOrEmpty(gyarto))
-                        {
-                            sql += " AND gyarto = @Gy";
-                            parameters.Add("Gy", gyarto);
-                        }
-                        sql += " ORDER BY nev";
-
-                        var data = await conn.QueryAsync<dynamic>(sql, parameters);
-                        return Ok(new { success = true, data = data.ToList() });
-                    }
-
-                case "categories":
-                    {
-                        // A képeden a 'tipus' oszlopban van pl. a 'motorolaj'
-                        var data = await conn.QueryAsync<string>(
-                            "SELECT DISTINCT tipus FROM olajok WHERE tipus IS NOT NULL AND aktiv = 1");
-                        return Ok(new { success = true, data = data.ToList() });
-                    }
-
-                case "viscosities":
-                    {
-                        var data = await conn.QueryAsync<string>(
-                            "SELECT DISTINCT viszkozitas FROM olajok WHERE viszkozitas IS NOT NULL AND aktiv = 1");
-                        return Ok(new { success = true, data = data.ToList() });
-                    }
-
-                case "brands":
-                    {
-                        var data = await conn.QueryAsync<string>(
-                            "SELECT DISTINCT gyarto FROM olajok WHERE gyarto IS NOT NULL AND aktiv = 1");
-                        return Ok(new { success = true, data = data.ToList() });
-                    }
-
-                default:
-                    return BadRequest(new { success = false, error = "Ismeretlen muvelet" });
+            using (var cx = new AutoalkatreszDbContext()) { 
+            var result = cx.Olajoks.ToList();
+            return StatusCode(200, result);
             }
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { success = false, error = ex.Message });
+
+            return StatusCode(500, ex.Message);
         }
     }
+    [HttpPost]
+    public IActionResult PostOlaj(Olajok olaj)
+    {
+        try
+        {
+            using (var cx = new AutoalkatreszDbContext())
+            {
+                if(olaj == null)
+                {
+                    return StatusCode(409, "Adj meg minden parametert");
+                   
+                }
+                cx.Olajoks.Add(olaj);
+                cx.SaveChanges();
+                return StatusCode(200, "Sikeres hozzaadas");
+            }
+        }
+        catch (Exception ex)
+        {
+
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutOlaj(int id, [FromBody] Olajok olaj)
+    {
+        try
+        {
+            using (var cx = new AutoalkatreszDbContext())
+            {
+                var existing = cx.Olajoks.FirstOrDefault(f => f.Id == id);
+                if (existing == null)
+                    return NotFound("Olaj not found");
+
+                olaj.Id = id;
+
+                cx.Entry(existing).CurrentValues.SetValues(olaj);
+
+                await cx.SaveChangesAsync();
+
+                return StatusCode(200, "Sikeres modositas");
+            }
+        }
+        catch (Exception ex)
+        {
+
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+
+    [HttpDelete]
+    public IActionResult DeleteOlaj(int id)
+    {
+        try
+        {
+            using (var cx = new AutoalkatreszDbContext())
+            {
+                var result = cx.Olajoks.FirstOrDefault(f => f.Id == id);
+                if (result == null) return NotFound("Nincs ilyen olaj");
+                cx.Remove(result);
+                cx.SaveChanges();
+                return StatusCode(200, "Sikeres torles");
+            }
+        }
+        catch (Exception ex)
+        {
+
+            return StatusCode(500,ex.Message);
+        }
+    }
+
 }
