@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using AutoPartsApi.Services;
-using Dapper;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using webshop.Models;
 
 namespace AutoPartsApi.Controllers;
 
@@ -8,233 +10,148 @@ namespace AutoPartsApi.Controllers;
 [Route("api/cart")]
 public class CartController : ControllerBase
 {
-    private readonly DbService _db;
-
-    public CartController(DbService db)
-    {
-        _db = db;
-    }
-
     [HttpGet]
+    public IActionResult GetAllCartItems()
+    {
+        try
+        {
+            using (var cx = new AutoalkatreszDbContext())
+            {
+                var result = cx.Kosars
+                    .Select(k => new {
+                        k.Id,
+                        k.UserId,
+                        k.AlkatreszId,
+                        k.OlajId,
+                        k.Mennyiseg,
+                        k.Hozzaadva
+                    })
+                    .ToList();
+
+                return StatusCode(200, result);
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+
+    public class CartItemDto
+    {
+        public int UserId { get; set; }
+        public int? AlkatreszId { get; set; }
+        public int? OlajId { get; set; }
+        public int Mennyiseg { get; set; } = 1;
+    }
+
     [HttpPost]
-    [HttpPut]
-    [HttpDelete]
-    public async Task<IActionResult> HandleAction(
-        [FromQuery] string action = "get",
-        [FromQuery] int user_id = 0)
+    public IActionResult PostCartItem([FromBody] CartItemDto? dto)
     {
         try
         {
-            using var conn = _db.CreateConnection();
-            conn.Open();
+            if (dto == null) return BadRequest(new { success = false, error = "Adj meg minden paramétert" });
 
-            switch (action)
+            using (var cx = new AutoalkatreszDbContext())
             {
-                case "get": return await GetCart(conn, user_id);
-                case "add": return await AddToCart(conn);
-                case "update": return await UpdateCart(conn);
-                case "remove": return await RemoveFromCart(conn);
-                case "clear": return await ClearCart(conn, user_id);
-                default: return NotFound(new { success = false, error = "Endpoint not found" });
+                var user = cx.Users.FirstOrDefault(u => u.Id == dto.UserId);
+                if (user == null) return BadRequest(new { success = false, error = "Nincs ilyen felhasználó" });
+
+                var toSave = new Kosar
+                {
+                    UserId = dto.UserId,
+                    AlkatreszId = dto.AlkatreszId,
+                    OlajId = dto.OlajId,
+                    Mennyiseg = dto.Mennyiseg,
+                    Hozzaadva = DateTime.Now,
+                    User = user 
+                };
+
+                cx.Kosars.Add(toSave);
+                cx.SaveChanges();
+
+                var saved = cx.Kosars
+                    .Include(k => k.User)
+                    .Where(k => k.Id == toSave.Id)
+                    .Select(k => new
+                    {
+                        id = k.Id,
+                        userId = k.UserId,
+                        alkatreszId = k.AlkatreszId,
+                        olajId = k.OlajId,
+                        mennyiseg = k.Mennyiseg,
+                        hozzaadva = k.Hozzaadva,
+                        user = k.User == null ? null : new
+                        {
+                            id = k.User.Id,
+                            felhasznalonev = k.User.Felhasznalonev,
+                            email = k.User.Email,
+                            vezeteknev = k.User.Vezeteknev,
+                            keresztnev = k.User.Keresztnev,
+                            telefon = k.User.Telefon
+                        }
+                    })
+                    .FirstOrDefault();
+
+                return StatusCode(200, new { success = true, message = "Sikeres hozzáadás a kosárhoz", cart = saved });
             }
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { success = false, error = ex.Message });
+            return StatusCode(500, ex.Message);
         }
     }
 
-    private async Task<IActionResult> GetCart(System.Data.IDbConnection conn, int userId)
+    [HttpPut("{id}")]
+    public IActionResult PutCartItem(int id, [FromBody] CartItemDto? dto)
     {
         try
         {
-            if (userId == 0)
+            if (dto == null) return BadRequest(new { success = false, error = "Missing body (CartItemDto)" });
+
+            using (var cx = new AutoalkatreszDbContext())
             {
-                var data = await ReadBody();
-                userId = GetInt(data, "user_id");
+                var existing = cx.Kosars.FirstOrDefault(f => f.Id == id);
+                if (existing == null) return NotFound(new { success = false, error = "Kosár tétel nem található" });
+
+                var user = cx.Users.FirstOrDefault(u => u.Id == dto.UserId);
+                if (user == null) return BadRequest(new { success = false, error = "Nincs ilyen felhasználó" });
+
+                existing.UserId = dto.UserId;
+                existing.AlkatreszId = dto.AlkatreszId;
+                existing.OlajId = dto.OlajId;
+                existing.Mennyiseg = dto.Mennyiseg;
+                existing.User = user;
+
+                cx.SaveChanges();
+
+                return StatusCode(200, new { success = true, message = "Sikeres módosítás" });
             }
-
-            if (userId == 0)
-                return Ok(new { success = true, items = Array.Empty<object>(), total = 0, logged_in = false });
-
-            var items = (await conn.QueryAsync(@"
-                SELECT k.id, k.mennyiseg, k.alkatresz_id, k.olaj_id,
-                       COALESCE(a.nev, o.nev) as nev,
-                       COALESCE(a.cikkszam, o.cikkszam) as cikkszam,
-                       COALESCE(COALESCE(a.akcios_ar, a.ar), COALESCE(o.akcios_ar, o.ar)) as ar,
-                       COALESCE(a.gyarto, o.gyarto) as gyarto
-                FROM kosar k
-                LEFT JOIN alkatreszek a ON k.alkatresz_id = a.id
-                LEFT JOIN olajok o ON k.olaj_id = o.id
-                WHERE k.user_id = @UserId", new { UserId = userId })).ToList();
-
-            decimal eredetiOsszeg = 0;
-            var result = new List<Dictionary<string, object?>>();
-
-            foreach (var rawItem in items)
-            {
-                var r = (IDictionary<string, object>)rawItem;
-
-                decimal ar = 0;
-                if (r.ContainsKey("ar") && !(r["ar"] is DBNull) && r["ar"] != null)
-                {
-                    ar = Convert.ToDecimal(r["ar"]);
-                }
-
-                int menny = 0;
-                if (r.ContainsKey("mennyiseg") && !(r["mennyiseg"] is DBNull) && r["mennyiseg"] != null)
-                {
-                    menny = Convert.ToInt32(r["mennyiseg"]);
-                }
-
-                decimal tetelOsszeg = ar * menny;
-                eredetiOsszeg += tetelOsszeg;
-
-                result.Add(new Dictionary<string, object?>
-                {
-                    ["id"] = r.ContainsKey("id") && !(r["id"] is DBNull) ? Convert.ToInt32(r["id"]) : 0,
-                    ["mennyiseg"] = menny,
-                    ["alkatresz_id"] = r.ContainsKey("alkatresz_id") && !(r["alkatresz_id"] is DBNull) ? r["alkatresz_id"] : null,
-                    ["olaj_id"] = r.ContainsKey("olaj_id") && !(r["olaj_id"] is DBNull) ? r["olaj_id"] : null,
-                    ["nev"] = r.ContainsKey("nev") && !(r["nev"] is DBNull) ? r["nev"]?.ToString() : "Ismeretlen termék",
-                    ["cikkszam"] = r.ContainsKey("cikkszam") && !(r["cikkszam"] is DBNull) ? r["cikkszam"]?.ToString() : "",
-                    ["ar"] = ar,
-                    ["gyarto"] = r.ContainsKey("gyarto") && !(r["gyarto"] is DBNull) ? r["gyarto"]?.ToString() : "",
-                    ["osszeg"] = tetelOsszeg
-                });
-            }
-
-            // --- KEDVEZMÉNY LOGIKA KEZDETE ---
-            // 1. Megnézzük, van-e korábbi rendelése a felhasználónak (írd át a 'rendelesek' táblanevet, ha nálad máshogy van!)
-            int korabbiRendelesekSzama = await conn.ExecuteScalarAsync<int>(
-                "SELECT COUNT(id) FROM rendelesek WHERE user_id = @UserId",
-                new { UserId = userId });
-
-            bool isElsoVasarlas = korabbiRendelesekSzama == 0;
-            decimal vegosszeg = eredetiOsszeg;
-
-            // 2. Ha ez az elsõ, levonjuk a 15%-ot
-            if (isElsoVasarlas && eredetiOsszeg > 0)
-            {
-                vegosszeg = eredetiOsszeg * 0.85m;
-            }
-            // --- KEDVEZMÉNY LOGIKA VÉGE ---
-
-            return Ok(new
-            {
-                success = true,
-                items = result,
-                total = vegosszeg,                 // A fizetendõ, esetlegesen kedvezményes ár
-                eredeti_total = eredetiOsszeg,     // Ezt küldjük a frontendnek, ha át akarja húzni a régi árat
-                elso_vasarlo_kedvezmeny = isElsoVasarlas, // Flag a frontendnek
-                logged_in = true
-            });
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"\n=== KOSÁR LEKÉRDEZÉSI HIBA ===\n{ex.Message}\n==============================\n");
-            return Ok(new { success = true, items = Array.Empty<object>(), total = 0, logged_in = true });
+            return StatusCode(500, ex.Message);
         }
     }
 
-    private async Task<IActionResult> AddToCart(System.Data.IDbConnection conn)
-    {
-        var data = await ReadBody();
-        int userId = GetInt(data, "user_id");
-        int alkatreszId = GetInt(data, "alkatresz_id");
-        int olajId = GetInt(data, "olaj_id");
-        int mennyiseg = GetInt(data, "mennyiseg", 1);
-
-        if (userId == 0)
-            return Ok(new { success = false, error = "A kosarba rakashoz be kell jelentkezni!", require_login = true });
-
-        if (alkatreszId == 0 && olajId == 0)
-            return Ok(new { success = false, error = "Hianyzo termek azonosito" });
-
-        var existing = (await conn.QueryAsync(
-            alkatreszId > 0
-                ? "SELECT id, mennyiseg FROM kosar WHERE user_id = @U AND alkatresz_id = @A"
-                : "SELECT id, mennyiseg FROM kosar WHERE user_id = @U AND olaj_id = @O",
-            new { U = userId, A = alkatreszId, O = olajId })).FirstOrDefault();
-
-        if (existing != null)
-        {
-            var er = (IDictionary<string, object>)existing;
-            await conn.ExecuteAsync(
-                "UPDATE kosar SET mennyiseg = mennyiseg + @M WHERE id = @Id",
-                new { M = mennyiseg, Id = Convert.ToInt32(er["id"]) });
-        }
-        else
-        {
-            await conn.ExecuteAsync(
-                "INSERT INTO kosar (user_id, alkatresz_id, olaj_id, mennyiseg) VALUES (@U, @A, @O, @M)",
-                new { U = userId, A = alkatreszId > 0 ? (int?)alkatreszId : null, O = olajId > 0 ? (int?)olajId : null, M = mennyiseg });
-        }
-
-        return Ok(new { success = true, message = "Termek hozzaadva a kosarhoz" });
-    }
-
-    private async Task<IActionResult> UpdateCart(System.Data.IDbConnection conn)
-    {
-        var data = await ReadBody();
-        int cartId = GetInt(data, "cart_id");
-        int mennyiseg = GetInt(data, "mennyiseg", 1);
-        int userId = GetInt(data, "user_id");
-
-        if (userId == 0) return Ok(new { success = false, error = "Nincs bejelentkezve" });
-        if (cartId == 0) return Ok(new { success = false, error = "Hianyzo kosar ID" });
-
-        if (mennyiseg <= 0)
-            await conn.ExecuteAsync("DELETE FROM kosar WHERE id = @Id AND user_id = @U", new { Id = cartId, U = userId });
-        else
-            await conn.ExecuteAsync("UPDATE kosar SET mennyiseg = @M WHERE id = @Id AND user_id = @U",
-                new { M = mennyiseg, Id = cartId, U = userId });
-
-        return Ok(new { success = true });
-    }
-
-    private async Task<IActionResult> RemoveFromCart(System.Data.IDbConnection conn)
-    {
-        var data = await ReadBody();
-        int cartId = GetInt(data, "cart_id");
-        int userId = GetInt(data, "user_id");
-
-        if (userId == 0) return Ok(new { success = false, error = "Nincs bejelentkezve" });
-        if (cartId == 0) return Ok(new { success = false, error = "Hianyzo kosar ID" });
-
-        await conn.ExecuteAsync("DELETE FROM kosar WHERE id = @Id AND user_id = @U", new { Id = cartId, U = userId });
-        return Ok(new { success = true });
-    }
-
-    private async Task<IActionResult> ClearCart(System.Data.IDbConnection conn, int userId)
-    {
-        if (userId == 0)
-        {
-            var data = await ReadBody();
-            userId = GetInt(data, "user_id");
-        }
-        if (userId == 0) return Ok(new { success = false, error = "Nincs bejelentkezve" });
-
-        await conn.ExecuteAsync("DELETE FROM kosar WHERE user_id = @U", new { U = userId });
-        return Ok(new { success = true });
-    }
-
-    private async Task<Dictionary<string, object?>?> ReadBody()
+    [HttpDelete("{id}")]
+    public IActionResult DeleteCartItem(int id)
     {
         try
         {
-            using var reader = new StreamReader(Request.Body);
-            var body = await reader.ReadToEndAsync();
-            if (string.IsNullOrEmpty(body)) return null;
-            return System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object?>>(body);
+            using (var cx = new AutoalkatreszDbContext())
+            {
+                var result = cx.Kosars.FirstOrDefault(f => f.Id == id);
+                if (result == null) return NotFound(new { success = false, error = "Nincs ilyen kosár tétel" });
+                cx.Remove(result);
+                cx.SaveChanges();
+                return StatusCode(200, new { success = true, message = "Sikeres törlés" });
+            }
         }
-        catch { return null; }
-    }
-
-    private static int GetInt(Dictionary<string, object?>? data, string key, int defaultValue = 0)
-    {
-        if (data == null || !data.ContainsKey(key) || data[key] == null) return defaultValue;
-        var val = data[key]!.ToString();
-        return int.TryParse(val, out int result) ? result : defaultValue;
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 }
