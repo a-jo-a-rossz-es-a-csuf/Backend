@@ -45,12 +45,12 @@ public class CarsController : ControllerBase
             {
                 if (jarmu == null)
                 {
-                    return StatusCode(409, "Adj meg minden paramétert");
+                    return StatusCode(409, "Adj meg minden paramÃ©tert");
 
                 }
                 cx.Jarmuveks.Add(jarmu);
                 cx.SaveChanges();
-                return StatusCode(200, "Sikeres hozzáadás");
+                return StatusCode(200, "Sikeres hozzÃ¡adÃ¡s");
             }
         }
         catch (Exception ex)
@@ -70,17 +70,15 @@ public class CarsController : ControllerBase
             {
                 var existing = cx.Jarmuveks.FirstOrDefault(f => f.Id == id);
                 if (existing == null)
-                    return NotFound("Jármû not found");
+                    return NotFound("JÃ¡rmÃ» not found");
 
-                // Ensure IDs match
                 jarmu.Id = id;
 
-                // Copy incoming values into the tracked entity
                 cx.Entry(existing).CurrentValues.SetValues(jarmu);
 
                 await cx.SaveChangesAsync();
 
-                return StatusCode(200, "Sikeres módosítás");
+                return StatusCode(200, "Sikeres mÃ³dosÃ­tÃ¡s");
             }
         }
         catch (Exception ex)
@@ -99,10 +97,10 @@ public class CarsController : ControllerBase
             using (var cx = new AutoalkatreszDbContext())
             {
                 var result = cx.Jarmuveks.FirstOrDefault(f => f.Id == id);
-                if (result == null) return NotFound("Nincs ilyen járgány");
+                if (result == null) return NotFound("Nincs ilyen jÃ¡rgÃ¡ny");
                 cx.Remove(result);
                 cx.SaveChanges();
-                return StatusCode(200, "Sikeres törlés");
+                return StatusCode(200, "Sikeres tÃ¶rlÃ©s");
             }
         }
         catch (Exception ex)
