@@ -1,6 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using AutoPartsApi.Services;
-using Dapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using webshop.Models;
 
 namespace AutoPartsApi.Controllers;
 
@@ -16,138 +19,164 @@ public class ChatController : ControllerBase
     }
 
     [HttpGet]
-    [HttpPost]
-    [HttpPut]
-    public async Task<IActionResult> HandleAction(
-        [FromQuery] string action = "",
-        [FromQuery] int user_id = 0,
-        [FromQuery] string? statusz = null)
+    public IActionResult GetAllMessages()
     {
         try
         {
-            using var conn = _db.CreateConnection();
-            conn.Open();
-
-            // Ellenorizzuk, hogy letezik-e a chat_uzenetek tabla
-            var tableExists = await conn.ExecuteScalarAsync<int>(
-                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'chat_uzenetek'");
-
-            if (tableExists == 0 && action != "send")
-                return Ok(new { success = true, data = Array.Empty<object>(), info = "A chat_uzenetek tabla nem letezik meg." });
-
-            switch (action)
-            {
-                case "send":
+            using var cx = new AutoalkatreszDbContext();
+            var data = cx.ChatUzeneteks
+                .Include(c => c.User)
+                .Include(c => c.Admin)
+                .OrderByDescending(c => c.Letrehozva)
+                .Select(c => new
                 {
-                    if (tableExists == 0)
-                        return Ok(new { success = false, error = "A chat_uzenetek tabla nem letezik! Futtasd le a database_chat.sql fajlt phpMyAdmin-ban." });
-
-                    var data = await ReadBody();
-                    int userId = GetInt(data, "user_id");
-                    string uzenet = GetStr(data, "uzenet").Trim();
-
-                    if (userId <= 0)
-                        return Ok(new { success = false, error = "Hianyzo vagy ervenytelen user_id" });
-                    if (string.IsNullOrEmpty(uzenet))
-                        return Ok(new { success = false, error = "Ures uzenet" });
-
-                    var newId = await conn.ExecuteScalarAsync<int>(@"
-                        INSERT INTO chat_uzenetek (user_id, uzenet, statusz, letrehozva) VALUES (@UserId, @Uzenet, 'uj', NOW());
-                        SELECT LAST_INSERT_ID()", new { UserId = userId, Uzenet = uzenet });
-
-                    return Ok(new { success = true, message = "Uzenet elkuldve", id = newId });
-                }
-
-                case "get_user_messages":
-                {
-                    if (user_id <= 0)
-                        return Ok(new { success = false, error = "Hianyzo user_id" });
-
-                    var messages = await conn.QueryAsync<dynamic>(@"
-                        SELECT c.*, u.email as user_email, u.vezeteknev, u.keresztnev, a.email as admin_email
-                        FROM chat_uzenetek c
-                        LEFT JOIN users u ON c.user_id = u.id
-                        LEFT JOIN users a ON c.admin_id = a.id
-                        WHERE c.user_id = @UserId
-                        ORDER BY c.letrehozva ASC", new { UserId = user_id });
-
-                    return Ok(new { success = true, data = messages });
-                }
-
-                case "get_all_messages":
-                {
-                    var sql = @"
-                        SELECT c.*, u.email as user_email, u.vezeteknev, u.keresztnev
-                        FROM chat_uzenetek c
-                        LEFT JOIN users u ON c.user_id = u.id";
-
-                    var parameters = new DynamicParameters();
-                    if (!string.IsNullOrEmpty(statusz))
+                    id = c.Id,
+                    userId = c.UserId,
+                    user = c.User == null ? null : new
                     {
-                        sql += " WHERE c.statusz = @Statusz";
-                        parameters.Add("Statusz", statusz);
-                    }
-                    sql += " ORDER BY c.letrehozva DESC";
+                        id = c.User.Id,
+                        felhasznalonev = c.User.Felhasznalonev,
+                        email = c.User.Email
+                    },
+                    uzenet = c.Uzenet,
+                    adminValasz = c.AdminValasz,
+                    adminId = c.AdminId,
+                    admin = c.Admin == null ? null : new
+                    {
+                        id = c.Admin.Id,
+                        felhasznalonev = c.Admin.Felhasznalonev,
+                        email = c.Admin.Email
+                    },
+                    statusz = c.Statusz,
+                    letrehozva = c.Letrehozva,
+                    valaszolva = c.Valaszolva
+                })
+                .ToList();
 
-                    var messages = await conn.QueryAsync<dynamic>(sql, parameters);
-                    return Ok(new { success = true, data = messages });
-                }
-
-                case "reply":
-                {
-                    var data = await ReadBody();
-                    int messageId = GetInt(data, "message_id");
-                    int adminId = GetInt(data, "admin_id");
-                    string valasz = GetStr(data, "valasz").Trim();
-
-                    if (messageId <= 0 || adminId <= 0 || string.IsNullOrEmpty(valasz))
-                        return Ok(new { success = false, error = "Hianyzo adatok" });
-
-                    await conn.ExecuteAsync(@"
-                        UPDATE chat_uzenetek SET admin_valasz = @V, admin_id = @AId, statusz = 'megvalaszolva', valaszolva = NOW()
-                        WHERE id = @Id",
-                        new { V = valasz, AId = adminId, Id = messageId });
-
-                    return Ok(new { success = true, message = "Valasz elkuldve" });
-                }
-
-                case "close":
-                {
-                    var data = await ReadBody();
-                    int messageId = GetInt(data, "message_id");
-
-                    if (messageId <= 0)
-                        return Ok(new { success = false, error = "Hianyzo message_id" });
-
-                    await conn.ExecuteAsync("UPDATE chat_uzenetek SET statusz = 'lezart' WHERE id = @Id",
-                        new { Id = messageId });
-                    return Ok(new { success = true, message = "Chat lezarva" });
-                }
-
-                default:
-                    return NotFound(new { success = false, error = "Endpoint not found: " + action });
-            }
+            return StatusCode(200, data);
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { success = false, error = "Szerver hiba: " + ex.Message });
+            return StatusCode(500, ex.Message);
         }
     }
 
-    private async Task<Dictionary<string, object?>?> ReadBody()
+    public class ChatCreateDto
+    {
+        public int UserId { get; set; }
+        public string Uzenet { get; set; } = string.Empty;
+    }
+
+    [HttpPost]
+    public IActionResult PostMessage([FromBody] ChatCreateDto? dto)
     {
         try
         {
-            using var reader = new StreamReader(Request.Body);
-            var body = await reader.ReadToEndAsync();
-            if (string.IsNullOrEmpty(body)) return null;
-            return System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object?>>(body);
+            if (dto == null || dto.UserId <= 0 || string.IsNullOrWhiteSpace(dto.Uzenet))
+                return BadRequest("Hianyzo adatok");
+
+            using var cx = new AutoalkatreszDbContext();
+
+            var user = cx.Users.FirstOrDefault(u => u.Id == dto.UserId);
+            if (user == null) return BadRequest("Nincs ilyen felhasználó");
+
+            var msg = new ChatUzenetek
+            {
+                UserId = dto.UserId,
+                Uzenet = dto.Uzenet.Trim(),
+                Statusz = "uj",
+                Letrehozva = DateTime.Now,
+                User = user
+            };
+
+            cx.ChatUzeneteks.Add(msg);
+            cx.SaveChanges();
+
+            var saved = cx.ChatUzeneteks
+                .Include(c => c.User)
+                .Where(c => c.Id == msg.Id)
+                .Select(c => new
+                {
+                    id = c.Id,
+                    userId = c.UserId,
+                    user = new { id = c.User.Id, felhasznalonev = c.User.Felhasznalonev, email = c.User.Email },
+                    uzenet = c.Uzenet,
+                    statusz = c.Statusz,
+                    letrehozva = c.Letrehozva
+                })
+                .FirstOrDefault();
+
+            return StatusCode(201, new { success = true, message = "Üzenet elküldve", data = saved });
         }
-        catch { return null; }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
-    private static string GetStr(Dictionary<string, object?>? d, string k) =>
-        d != null && d.ContainsKey(k) && d[k] != null ? d[k]!.ToString()! : "";
-    private static int GetInt(Dictionary<string, object?>? d, string k, int def = 0) =>
-        d != null && d.ContainsKey(k) && d[k] != null && int.TryParse(d[k]!.ToString(), out int v) ? v : def;
+    public class ChatUpdateDto
+    {
+        public string? AdminValasz { get; set; }
+        public int? AdminId { get; set; }
+        public string? Statusz { get; set; }
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult PutMessage(int id, [FromBody] ChatUpdateDto? dto)
+    {
+        try
+        {
+            if (dto == null) return BadRequest("Hianyzo body");
+
+            using var cx = new AutoalkatreszDbContext();
+            var existing = cx.ChatUzeneteks.Include(c => c.Admin).FirstOrDefault(c => c.Id == id);
+            if (existing == null) return NotFound("Üzenet nem található");
+
+            if (!string.IsNullOrEmpty(dto.AdminValasz))
+            {
+                if (!dto.AdminId.HasValue || dto.AdminId.Value <= 0)
+                    return BadRequest("Admin ID kötelezõ, ha válasz kerül mentésre");
+
+                var admin = cx.Users.FirstOrDefault(u => u.Id == dto.AdminId.Value);
+                if (admin == null) return BadRequest("Nincs ilyen admin felhasználó");
+
+                existing.AdminValasz = dto.AdminValasz.Trim();
+                existing.AdminId = dto.AdminId;
+                existing.Admin = admin;
+                existing.Valaszolva = DateTime.Now;
+                existing.Statusz = dto.Statusz ?? "megvalaszolva";
+            }
+            else if (!string.IsNullOrEmpty(dto.Statusz))
+            {
+                existing.Statusz = dto.Statusz;
+                if (dto.Statusz == "lezart") existing.Valaszolva = DateTime.Now;
+            }
+
+            cx.SaveChanges();
+            return StatusCode(200, new { success = true, message = "Sikeres módosítás" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteMessage(int id)
+    {
+        try
+        {
+            using var cx = new AutoalkatreszDbContext();
+            var existing = cx.ChatUzeneteks.FirstOrDefault(c => c.Id == id);
+            if (existing == null) return NotFound("Nincs ilyen üzenet");
+
+            cx.ChatUzeneteks.Remove(existing);
+            cx.SaveChanges();
+            return StatusCode(200, new { success = true, message = "Üzenet törölve" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
 }
