@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
 
             if (data == null || string.IsNullOrWhiteSpace(data.Email) || string.IsNullOrWhiteSpace(data.Password))
 
-                return BadRequest(new { success = false, error = "Email ?s jelsz? megad?sa k?telez?" });
+                return BadRequest(new { success = false, error = "Email es jelszo megadasa kotelezo" });
 
 
 
@@ -41,7 +41,7 @@ public class AuthController : ControllerBase
 
             if (user == null)
 
-                return Unauthorized(new { success = false, error = "Hib?s email c?m vagy jelsz?" });
+                return Unauthorized(new { success = false, error = "Hibas email cim vagy jelszo" });
 
 
 
@@ -49,7 +49,7 @@ public class AuthController : ControllerBase
 
             if (!isPasswordValid)
 
-                return Unauthorized(new { success = false, error = "Hib?s email c?m vagy jelsz?" });
+                return Unauthorized(new { success = false, error = "Hibas email cim vagy jelszo" });
 
 
 
@@ -99,7 +99,7 @@ public class AuthController : ControllerBase
 
         {
 
-            return StatusCode(500, new { success = false, error = "Szerver hiba t?rt?nt a bejelentkez?s sor?n." });
+            return StatusCode(500, new { success = false, error = "Szerver hiba tortent a bejelentkezes soran" });
 
         }
 
@@ -119,7 +119,7 @@ public class AuthController : ControllerBase
 
             if (data == null || string.IsNullOrWhiteSpace(data.Email) || string.IsNullOrWhiteSpace(data.Password))
 
-                return BadRequest(new { success = false, error = "Email ?s jelsz? megad?sa k?telez?" });
+                return BadRequest(new { success = false, error = "Email es jelszo megadasa kotelezo" });
 
 
 
@@ -129,7 +129,7 @@ public class AuthController : ControllerBase
 
             if (exists)
 
-                return Conflict(new { success = false, error = "Ez az email c?m m?r foglalt" });
+                return Conflict(new { success = false, error = "Ez az email cim mar foglalt" });
 
 
 
@@ -177,7 +177,7 @@ public class AuthController : ControllerBase
 
                 success = true,
 
-                message = "Sikeres regisztr?ci?!",
+                message = "Sikeres regisztráció!",
 
                 user = new
 
@@ -207,7 +207,7 @@ public class AuthController : ControllerBase
 
         {
 
-            return StatusCode(500, new { success = false, error = "Szerver hiba t?rt?nt a regisztr?ci? sor?n." });
+            return StatusCode(500, new { success = false, error = "Szerver hiba tortent a regisztracio soran" });
 
         }
 
@@ -223,7 +223,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("auth/logout")]
 
-    public IActionResult Logout() => Ok(new { success = true, message = "Sikeres kijelentkez?s" });
+    public IActionResult Logout() => Ok(new { success = true, message = "Sikeres kijelentkezes" });
 
 }
 
