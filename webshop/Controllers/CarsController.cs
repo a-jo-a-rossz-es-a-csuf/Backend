@@ -44,6 +44,7 @@ public class CarsController : ControllerBase
         {
             using (var cx = new AutoalkatreszDbContext())
             {
+                // Csak azokat a márkákat adjuk vissza, amik egyeznek a típussal (pl. "szemely")
                 var result = cx.Markaks
                     .Where(m => m.Tipus.ToLower() == tipus.ToLower())
                     .ToList();
@@ -98,7 +99,6 @@ public class CarsController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
-
 
     [HttpPost]
     public IActionResult PostJarmuvek(Jarmuvek jarmu)
