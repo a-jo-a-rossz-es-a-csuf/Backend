@@ -44,12 +44,12 @@ public class OlajokController : ControllerBase
             {
                 if(olaj == null)
                 {
-                    return StatusCode(409, "Adj meg minden param�tert");
+                    return StatusCode(409, "Adj meg minden parametert");
                    
                 }
                 cx.Olajoks.Add(olaj);
                 cx.SaveChanges();
-                return StatusCode(200, "Sikeres hozz�ad�s");
+                return StatusCode(200, "Sikeres hozzaadas");
             }
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public class OlajokController : ControllerBase
             {
                 var existing = cx.Olajoks.FirstOrDefault(f => f.Id == id);
                 if (existing == null)
-                    return NotFound("Olaj not found");
+                    return NotFound("Olaj nem talalhato");
 
                 olaj.Id = id;
 
@@ -77,7 +77,7 @@ public class OlajokController : ControllerBase
 
                 await cx.SaveChangesAsync();
 
-                return StatusCode(200, "Sikeres m�dos�t�s");
+                return StatusCode(200, "Sikeres modositas");
             }
         }
         catch (Exception ex)
@@ -99,7 +99,7 @@ public class OlajokController : ControllerBase
                 if (result == null) return NotFound("Nincs ilyen olaj");
                 cx.Remove(result);
                 cx.SaveChanges();
-                return StatusCode(200, "Sikeres t�rl�s");
+                return StatusCode(200, "Sikeres torles");
             }
         }
         catch (Exception ex)
