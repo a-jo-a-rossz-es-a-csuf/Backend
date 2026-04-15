@@ -54,8 +54,7 @@ public class UserController : ControllerBase
         try
         {
             if (user == null)
-                return BadRequest(new { success = false, error = "Adj meg minden parametert" });
-
+                return BadRequest(new { success = false, error = "Adj meg minden param�tert" });
 
             if (string.IsNullOrWhiteSpace(user.Felhasznalonev) || string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Jelszo))
                 return BadRequest(new { success = false, error = "Felhasznalonev, email es jelszo kotelezo" });
@@ -71,7 +70,7 @@ public class UserController : ControllerBase
             cx.Users.Add(user);
             cx.SaveChanges();
 
-            return StatusCode(201, new { success = true, id = user.Id, message = "Felhasznalo sikeresen letrehozva" });
+            return StatusCode(201, new { success = true, id = user.Id, message = "Felhaszn�l� sikeresen l�trehozva" });
         }
         catch (Exception ex)
         {
@@ -88,8 +87,7 @@ public class UserController : ControllerBase
 
             using var cx = new AutoalkatreszDbContext();
             var existing = cx.Users.FirstOrDefault(u => u.Id == id);
-            if (existing == null) return NotFound(new { success = false, error = "Felhaszn nem talalhato" });
-
+            if (existing == null) return NotFound(new { success = false, error = "Felhaszn�l� nem tal�lhat�" });
 
             string incomingPassword = user.Jelszo ?? string.Empty;
             existing.Felhasznalonev = user.Felhasznalonev;
@@ -104,7 +102,7 @@ public class UserController : ControllerBase
             existing.Szerepkor = user.Szerepkor ?? existing.Szerepkor;
 
             await cx.SaveChangesAsync();
-            return StatusCode(200, new { success = true, message = "Sikeres modositas" });
+            return StatusCode(200, new { success = true, message = "Sikeres m�dos�t�s" });
         }
         catch (Exception ex)
         {
@@ -119,11 +117,11 @@ public class UserController : ControllerBase
         {
             using var cx = new AutoalkatreszDbContext();
             var existing = cx.Users.FirstOrDefault(u => u.Id == id);
-            if (existing == null) return NotFound(new { success = false, error = "Felhaszn nem talalhahto" });
+            if (existing == null) return NotFound(new { success = false, error = "Felhaszn�l� nem tal�lhat�" });
 
             cx.Users.Remove(existing);
             cx.SaveChanges();
-            return StatusCode(200, new { success = true, message = "Felhaszn torolve" });
+            return StatusCode(200, new { success = true, message = "Felhaszn�l� t�r�lve" });
         }
         catch (Exception ex)
         {
