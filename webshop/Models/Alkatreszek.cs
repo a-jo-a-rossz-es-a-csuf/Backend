@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace webshop.Models;
 
@@ -19,6 +20,7 @@ public partial class Alkatreszek
 
     public decimal? AkciosAr { get; set; }
 
+    [ConcurrencyCheck]
     public int? Keszlet { get; set; }
 
     public string? Gyarto { get; set; }
