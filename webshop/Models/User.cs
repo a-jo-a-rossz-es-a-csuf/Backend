@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -26,6 +26,8 @@ public partial class User
 
     public DateTime? UtolsoBelepes { get; set; }
 
+    
+    public bool ElsoVasarolasKedvezmeny { get; set; } = true;
 
     [JsonIgnore]
     public virtual ICollection<ChatUzenetek> ChatUzenetekAdmins { get; set; } = new List<ChatUzenetek>();
