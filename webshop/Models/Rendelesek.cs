@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace webshop.Models;
@@ -9,7 +9,7 @@ public partial class Rendelesek
 
     public int? UserId { get; set; }
 
-    public string RendelesSzam { get; set; } = null!;
+    public string? RendelesSzam { get; set; }
 
     public string? Statusz { get; set; }
 
